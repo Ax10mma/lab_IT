@@ -326,3 +326,9 @@ window.addEventListener('keydown', (e) => {
     saveCurrentConfig();
   }
 });
+
+// Відображення змінної оточення
+const envStatus = document.getElementById('env-status')
+if (envStatus) {
+  envStatus.textContent = import.meta.env.VITE_APP_STATUS || 'Unknown'
+}
