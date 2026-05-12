@@ -8,8 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint scr/JavaScript/3d_tuning.js tests/logic.js",
-    "test:unit": "vitest run --config ./vitest.config.js --root .",
-    "test:unit:coverage": "vitest run --config vitest.config.js --coverage",
+    "test:unit": "vitest run --config ./vitest.config.js",
+    "test:unit:coverage": "vitest run --config ./vitest.config.js --coverage",
     "test:e2e": "playwright test"
   },
   "repository": {
