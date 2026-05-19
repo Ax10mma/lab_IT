@@ -336,10 +336,10 @@ posthog.onFeatureFlags(() => {
 });
 
 // ── Старт ──────────────────────────────────────────────
-loadBaseModel('ak-74__upgrade.glb', 'AK-74');
+loadBaseModel('/ak-74__upgrade.glb', 'AK-74');
 
 async function saveCurrentConfig() {
-    const response = await fetch('http://localhost:3000/api/config/save', {
+    const response = await fetch('/api/config/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
