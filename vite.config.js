@@ -6,7 +6,7 @@ export default defineConfig({
     outDir: '../dist',
     emptyOutDir: true,
     rollupOptions: {
-      input: '3d_tuning.html'
+      input: 'index.html'
     }
   }
 })
