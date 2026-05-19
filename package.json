@@ -1,6 +1,6 @@
 {
   "name": "lab_it",
-  "type": "module",
+  "type": "commonjs",
   "version": "1.0.0",
   "description": "Інтерактивний 3D конфігуратор для вибору аксесуарів до airsoft зброї. \r Дозволяє підбирати аксесуари (приціл, руків'я, приклад, лазер тощо) \r та переглядати їх у реальному часі на 3D моделі.",
   "main": "index.js",
@@ -20,7 +20,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/Ax10mma/lab_IT/issues"
   },
@@ -31,5 +30,9 @@
     "eslint": "^10.3.0",
     "vite": "^8.0.12",
     "vitest": "^4.1.6"
+  },
+  "dependencies": {
+    "@sentry/browser": "^10.53.1",
+    "posthog-js": "^1.374.2"
   }
 }

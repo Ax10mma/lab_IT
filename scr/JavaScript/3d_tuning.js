@@ -2,6 +2,22 @@ import * as THREE from 'https://esm.sh/three@0.150.1';
 import { GLTFLoader } from 'https://esm.sh/three@0.150.1/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'https://esm.sh/three@0.150.1/examples/jsm/controls/OrbitControls.js';
 import { DRACOLoader } from 'https://esm.sh/three@0.150.1/examples/jsm/loaders/DRACOLoader.js';
+import posthog from 'posthog-js';
+import * as Sentry from '@sentry/browser';
+
+Sentry.init({
+  dsn: 'https://d3f2f1cc0a35b56aae7cf3b7496e3474@o4511415513120768.ingest.de.sentry.io/4511415524786256',
+  integrations: [
+    Sentry.browserTracingIntegration(),
+  ],
+  tracesSampleRate: 1.0,
+  environment: 'development', 
+});
+
+posthog.init('phc_z9yKc5BpVtnW3oUemz5H2NzrFmoj9KnLMKSWFRaT9Pca', {
+  api_host: 'https://eu.posthog.com', // або https://app.posthog.com
+  person_profiles: 'identified_only',
+});
 
 // ── DOM ────────────────────────────────────────────────
 const canvas      = document.getElementById('viewport');
@@ -255,12 +271,20 @@ document.querySelectorAll('.accessory-card').forEach(card => {
       card.classList.remove('selected');
       detachAccessory(category);
       delete selectedItems[category];
+      posthog.capture('accessory_removed', {  // ← додай сюди
+        accessory_type: file,
+        category: category,
+      });
     } else {
       document.querySelectorAll(`.accessory-card[data-category="${category}"]`)
         .forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
       attachAccessory(category, file);
       selectedItems[category] = name;
+      posthog.capture('accessory_added', {  // ← додай сюди
+        accessory_type: file,
+        category: category,
+      });
     }
     updateSummary();
   });
@@ -304,6 +328,13 @@ window.addEventListener('keydown', (e) => {
   console.log(`[${currentGun}][${debugCat}] pos: [${obj.position.x.toFixed(3)}, ${obj.position.y.toFixed(3)}, ${obj.position.z.toFixed(3)}]`);
 });
 
+posthog.onFeatureFlags(() => {
+  if (posthog.isFeatureEnabled('show-urgent-filter')) {
+    console.log('✅ Feature flag show-urgent-filter активний!');
+    // тут можна показати додатковий UI елемент
+  }
+});
+
 // ── Старт ──────────────────────────────────────────────
 loadBaseModel('ak-74__upgrade.glb', 'AK-74');
 
@@ -317,6 +348,10 @@ async function saveCurrentConfig() {
         })
     });
     const result = await response.json();
+    posthog.capture('config_saved', {  // ← додай сюди
+      gun: currentGun,
+      total_accessories: Object.values(selectedItems).filter(Boolean).length,
+    });
     alert(result.message);
 }
 
@@ -332,3 +367,16 @@ const envStatus = document.getElementById('env-status')
 if (envStatus) {
   envStatus.textContent = import.meta.env.VITE_APP_STATUS || 'Unknown'
 }
+
+window.throwTestError = function() {
+  throw new Error("Sentry Test Error: Something went wrong!" + Date.now());
+}
+
+Sentry.setUser({
+  id: "12345",
+  email: "student@example.com",
+  segment: "premium_user"
+});
+
+// Очищення контексту при виході
+// Sentry.setUser(null); // викликати при logout
